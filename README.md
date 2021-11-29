@@ -6,7 +6,9 @@ bans ip after setted retrys
 - Optional: change options in the beginning of the main file.
 
   # Using
-  include_once("php-ban-ip/banip.php");
+<?php
+include_once("php-ban-ip/banip.php");
+?>
   
   
  # Have questions or need help to implement?
