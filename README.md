@@ -10,8 +10,7 @@ bans ip after setted retrys
   
   
  # Have questions or need help to implement?
- <a href="tg://resolve?domain=dmd23" target="_blank">TELEGRAM</a>
-
+ <a href="tg//resolve?domain=dmd23" target="_blank">TELEGRAM</a> 
   
   
   
