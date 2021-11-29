@@ -6,11 +6,10 @@ bans ip after setted retrys
 - Optional: change options in the beginning of the main file.
 
   # Using
-<code>
-  <?php
+
 include_once("php-ban-ip/banip.php");
-?>
-  </code>
+
+
   
  # Have questions or need help to implement?
   <a href="https://telegram.im/@dmd23" target="_blank"><img src="https://telegram.im/widget-logo/?v=2&bg=29a0da&color=ffffff&round=on&login=%40dmd23&t=&b=&width=100&height=100&fontsize=35&r=50" alt="@dmd23"></a>
