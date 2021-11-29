@@ -33,15 +33,29 @@ SOURCE: https://github.com/jknipper/htaccess-banip
  * Settings
  */
 
-const MAX_RETRY = 20;
-const FIND_TIME = 600;
+const MAX_RETRY = 1000;
+const FIND_TIME = 86400; //in seconds
 
-const HTACCESS_FILE = "../../.htaccess";
-const IP_DB_FILE    = "./db.txt";
+const IP_DB_FILE  = __DIR__ ."/ban_ip_db.txt";
+
+
+
+
+//secure db file
+//chmod($ip_db_file,0600);
 
 /*
  * Functions
  */
+
+
+function dirname_safe($path, $level = 0){
+    $dir = explode(DIRECTORY_SEPARATOR, $path);
+    $level = $level * -1;
+    if($level == 0) $level = count($dir);
+    array_splice($dir, $level);
+    return implode($dir, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
+}
 
 function check_ip( $ip ) {
 
@@ -58,7 +72,7 @@ function check_ip( $ip ) {
 
 		if ( $db[ $ip ]["retries"] >= MAX_RETRY && $tdiff <= FIND_TIME ) {
 			$ban = true;
-			unset( $db[ $ip ] );
+			$db[ $ip ]["retries"]=$db[ $ip ]["granted_retries"];
 		} elseif ( $tdiff > FIND_TIME ) {
 			$db[ $ip ]["timestamp"] = time();
 			$db[ $ip ]["retries"]   = 1;
@@ -67,7 +81,7 @@ function check_ip( $ip ) {
 			$db[ $ip ]["retries"]   = $db[ $ip ]["retries"] + 1;
 		}
 	} else {
-		$db[ $ip ] = array( "timestamp" => time(), "retries" => 1 );
+		$db[ $ip ] = array( "timestamp" => time(), "retries" => 1 ,"granted_retries" => MAX_RETRY);
 	}
 
 	save( $db );
@@ -77,8 +91,7 @@ function check_ip( $ip ) {
 
 function ban_ip( $ip ) {
 	$deny = sprintf( "\nDENY FROM %s", $ip );
-	file_put_contents( HTACCESS_FILE, $deny, FILE_APPEND );
-	echo "done";
+	file_put_contents( dirname_safe(__DIR__, 1) . ".htaccess", $deny, FILE_APPEND );
 }
 
 function load() {
@@ -115,29 +128,42 @@ $ip = get_ip();
  */
 
 if ( filter_var( $ip, FILTER_VALIDATE_IP ) && check_ip( $ip ) ) {
+	//Ban him and tell him
 	ban_ip( $ip );
+
+	//send response
+	http_response_code( 401 );
+	
+	echo '
+	<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+	<html>
+	<head>
+		<title>401 Authorization Required</title>
+	</head>
+	<body>
+	<h1>Authorization Required</h1>
+	
+	<p>This server could not verify that you
+		are authorized to access the document
+		requested. Either you supplied the wrong
+		credentials (e.g., ba2003:45:4b35:500:9dc0:f1a3:8f8f:7797d password), or your
+		browser doesnt understand how to supply
+		the credentials required.</p>
+	</body>
+	</html>';
+
+
+	//Throw exception
+	throw new Exception('You are not allowed to do this.');
+
+	// Stop script
+	die();
 }
 
 /*
  * Send response
  */
 
-http_response_code( 401 );
+
 
 ?>
-<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
-<html>
-<head>
-	<title>401 Authorization Required</title>
-</head>
-<body>
-<h1>Authorization Required</h1>
-
-<p>This server could not verify that you
-	are authorized to access the document
-	requested. Either you supplied the wrong
-	credentials (e.g., ba2003:45:4b35:500:9dc0:f1a3:8f8f:7797d password), or your
-	browser doesn't understand how to supply
-	the credentials required.</p>
-</body>
-</html>
