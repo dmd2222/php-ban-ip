@@ -33,8 +33,10 @@ SOURCE: https://github.com/jknipper/htaccess-banip
  * Settings
  */
 
-const MAX_RETRY = 1000;
-const FIND_TIME = 86400; //in seconds
+const MAX_RETRY = 10;
+const FIND_TIME = 86400; //in seconds (86400 sec = 1 day)
+
+const UNBAN_AFTER_X_SECONDS=86400; //in seconds (86400 sec = 1 day)
 
 const IP_DB_FILE  = __DIR__ ."/ban_ip_db.txt";
 
@@ -42,7 +44,7 @@ const IP_DB_FILE  = __DIR__ ."/ban_ip_db.txt";
 
 
 //secure db file
-//chmod($ip_db_file,0600);
+chmod($ip_db_file,0600);
 
 /*
  * Functions
@@ -81,7 +83,7 @@ function check_ip( $ip ) {
 			$db[ $ip ]["retries"]   = $db[ $ip ]["retries"] + 1;
 		}
 	} else {
-		$db[ $ip ] = array( "timestamp" => time(), "retries" => 1 ,"granted_retries" => MAX_RETRY);
+		$db[ $ip ] = array( "timestamp" => time(), "retries" => 1 ,"granted_retries" => MAX_RETRY,"ip" => $ip);
 	}
 
 	save( $db );
@@ -89,9 +91,63 @@ function check_ip( $ip ) {
 	return $ban;
 }
 
+
+function check_ip_grant_access_unban( $ip ) {
+
+	$unban = false;
+	$db  = array();
+
+	if ( file_exists( IP_DB_FILE ) ) {
+		$db = load();
+	}
+
+	if ( ! empty( $db ) && array_key_exists( $ip["ip"], $db ) ) {
+
+		$tdiff = time() - $db[ $ip ]["timestamp"];
+		
+		if($tdiff >= UNBAN_AFTER_X_SECONDS){
+
+			$unban = true;
+			// in db grant access
+			$db[ $ip ]["timestamp"] = time();
+			$db[ $ip ]["retries"]   = $db[ $ip ]["granted_retries"];
+
+
+			//in .htaccess grant access
+			unban_ip( $ip );
+		}
+
+	}
+
+	save( $db );
+
+	return $unban;
+}
+
 function ban_ip( $ip ) {
 	$deny = sprintf( "\nDENY FROM %s", $ip );
 	file_put_contents( dirname_safe(__DIR__, 1) . ".htaccess", $deny, FILE_APPEND );
+}
+
+function unban_ip( $ip ) {
+	//creat deny string
+	$deny_string = sprintf( "DENY FROM %s", $ip["ip"] );
+
+	$file_path= dirname_safe(__DIR__, 1) . ".htaccess";
+
+	//in .htaccess grant access
+				// search line and delete it
+				$lines = file($file_path); // reads a file into a array with the lines
+
+				$output_text ="";
+				foreach ($lines as $line) {
+					if (!strstr(sha1($line) , sha1($deny_string))) {
+						$output_text .= $line;
+					} 
+				}
+		// replace the contents of the file with the output
+		file_put_contents($file_path, $output_text);
+
 }
 
 function load() {
@@ -158,6 +214,57 @@ if ( filter_var( $ip, FILTER_VALIDATE_IP ) && check_ip( $ip ) ) {
 
 	// Stop script
 	die();
+}else{
+
+	//Normal request / no banning
+		//Make things after user left
+			//ignore_user_abort(true);
+			//set_time_limit(0);
+			//ob_end_flush();
+			//flush();
+			// do some work after user has been gone
+
+			//go through hole db if it is more then 10 minutes gone
+			$datetime_file= filemtime(__DIR__ ."/grant_access_check_datetime.txt");
+			$datetime_now = time();
+			$datetime_diff = $datetime_now-$datetime_file;
+
+
+			if($datetime_diff >=10){ //600 seconds =10 minutes
+					//write down last grant_access check
+					file_put_contents(__DIR__ ."/grant_access_check_datetime.txt", $datetime_now);
+
+					//secure file
+					chmod(__DIR__ ."/grant_access_check_datetime.txt",0600);
+					
+					//Go through every ip in db
+					$db  = array();
+
+					if ( file_exists( IP_DB_FILE ) ) {
+						$db = load();
+					}
+					
+					if ( ! empty( $db ) ) {
+
+						foreach ($db as $object_value) {
+							$tdiff = time() - $object_value["timestamp"];
+							if($tdiff >= UNBAN_AFTER_X_SECONDS){
+								check_ip_grant_access_unban( $object_value );
+							}
+							
+						}
+						
+						
+
+					}
+
+
+
+			}
+
+
+
+
 }
 
 /*
