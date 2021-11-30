@@ -33,7 +33,7 @@ SOURCE: https://github.com/jknipper/htaccess-banip
  * Settings
  */
 
-const MAX_RETRY = 10;
+const MAX_RETRY = 1000;
 const FIND_TIME = 86400; //in seconds (86400 sec = 1 day)
 
 const UNBAN_AFTER_X_SECONDS=86400; //in seconds (86400 sec = 1 day)

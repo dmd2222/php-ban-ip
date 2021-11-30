@@ -6,6 +6,9 @@ bans ip after setted retrys
 -   -ban ips after to much retrys per time
 -  Added auto grant access after ban (for example grand access again after one day.)
 -  Fixed some issues with the folder direction.
+-secured the db file.
+
+
 # Installation
 - Copy the code in your ftp folder. (Ready to use. :) )
 - <code> git clone https://github.com/dmd2222/php-ban-ip.git <code>
