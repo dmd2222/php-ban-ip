@@ -1,6 +1,8 @@
 # php-ban-ip
 bans ip after setted retrys
 
+[![Anurag's GitHub stats](https://github-readme-stats.vercel.app/api?username=dmd2222)](https://github.com/dmd2222/github-readme-stats)
+
 # Features
 - (Jan Knipper SOURCE: https://github.com/jknipper/htaccess-banip)
 -   -ban ips after to much retrys per time
