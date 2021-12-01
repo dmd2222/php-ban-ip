@@ -44,7 +44,7 @@ const IP_DB_FILE  = __DIR__ ."/ban_ip_db.txt";
 
 
 //secure db file
-chmod($ip_db_file,0600);
+chmod(IP_DB_FILE,0600);
 
 /*
  * Functions
