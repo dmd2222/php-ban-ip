@@ -40,6 +40,8 @@ const UNBAN_AFTER_X_SECONDS=86400; //in seconds (86400 sec = 1 day)
 
 const IP_DB_FILE  = __DIR__ ."/ban_ip_db.txt";
 
+$email_ricipiants_contacts = array("");
+
 
 
 
@@ -49,6 +51,22 @@ chmod(IP_DB_FILE,0600);
 /*
  * Functions
  */
+
+function sendmailtorecipients($email_ricipiants_contacts,$subject,$message){
+	// $contacts array
+	//   $contacts = array("youremailaddress@yourdomain.com","youremailaddress@yourdomain.com");
+	//....as many email address as you need
+	
+			foreach($email_ricipiants_contacts as $contact) {
+			
+			$to = $contact;
+			mail($to, $subject, $message);
+			
+			}
+	
+	
+	}
+
 
 
 function dirname_safe($path, $level = 0){
@@ -184,8 +202,17 @@ $ip = get_ip();
  */
 
 if ( filter_var( $ip, FILTER_VALIDATE_IP ) && check_ip( $ip ) ) {
+
+
+
+
+	//inform admin
+	$email_text="Hi, here Ban_ip installed on: " . dirname(__FILE__) . " An device with the ip: " . $ip . " tried more than " . MAX_RETRY . " times at " . date("d.m.Y - H:i", time()) . " to send a request. The ip have been banned for " . UNBAN_AFTER_X_SECONDS . " seconds (" . (UNBAN_AFTER_X_SECONDS/60/60/24) . " days). Best regards";
+	sendmailtorecipients($email_ricipiants_contacts,"Ban_ip information",$email_text);
+
 	//Ban him and tell him
 	ban_ip( $ip );
+
 
 	//send response
 	http_response_code( 401 );
