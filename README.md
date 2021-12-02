@@ -3,7 +3,7 @@ bans ip after setted retrys
 
 
 # Features
-- (Jan Knipper SOURCE: https://github.com/jknipper/htaccess-banip)
+- (inspired by Jan Knipper: https://github.com/jknipper/htaccess-banip)
 -   -ban ips after to much retrys per time
 -  Added auto grant access after ban (for example grand access again after one day.)
 -  Fixed some issues with the folder direction.
