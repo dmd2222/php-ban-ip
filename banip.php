@@ -5,6 +5,7 @@
 The MIT License (MIT)
 
 Copyright (c) 2015 Jan Knipper <j.knipper@part.berlin>
+Copyright (c) 2021 CS-Digital UG <info  @cs  -  digital-   ug . ~~ de >
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
