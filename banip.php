@@ -44,6 +44,13 @@ const IP_DB_FILE  = __DIR__ ."/ban_ip_db.txt";
 $email_ricipiants_contacts = array("");
 
 
+$develop_mode=True;
+
+if($develop_mode==true){
+	echo 'Protected by ON BAN IP  <a href="https://github.com/dmd2222/php-ban-ip" target="_blank">?</a> - Ip: ' . get_ip() . ' Number of retries.: '.  ip_number_of_tries( get_ip() );
+}
+
+
 
 
 //secure db file
@@ -91,9 +98,9 @@ function check_ip( $ip ) {
 
 		$tdiff = time() - $db[ $ip ]["timestamp"];
 
-		if ( $db[ $ip ]["retries"] >= MAX_RETRY && $tdiff <= FIND_TIME ) {
+		if ( $db[ $ip ]["retries"] >= $db[ $ip ]["granted_retries"] && $tdiff <= FIND_TIME ) {
 			$ban = true;
-			$db[ $ip ]["retries"]=$db[ $ip ]["granted_retries"];
+			$db[ $ip ]["retries"]   = $db[ $ip ]["retries"] + 1;
 		} elseif ( $tdiff > FIND_TIME ) {
 			$db[ $ip ]["timestamp"] = time();
 			$db[ $ip ]["retries"]   = 1;
@@ -108,6 +115,29 @@ function check_ip( $ip ) {
 	save( $db );
 
 	return $ban;
+}
+
+
+function ip_number_of_tries( $ip ) {
+
+
+	$db  = array();
+
+	if ( file_exists( IP_DB_FILE ) ) {
+		$db = load();
+	}
+
+	if ( ! empty( $db ) && array_key_exists( $ip, $db ) ) {
+
+		$tdiff = time() - $db[ $ip ]["timestamp"];
+
+	} else {
+		$db[ $ip ] = array( "timestamp" => time(), "retries" => 1 ,"granted_retries" => MAX_RETRY,"ip" => $ip);
+	}
+
+	save( $db );
+
+	return $db[ $ip ]["retries"];
 }
 
 
