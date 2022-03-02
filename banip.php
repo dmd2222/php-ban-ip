@@ -238,7 +238,7 @@ if ( filter_var( $ip, FILTER_VALIDATE_IP ) && check_ip( $ip ) ) {
 
 
 	//inform admin
-	$email_text="Hi, here Ban_ip installed on: " . dirname(__FILE__) . " An device with the ip: " . $ip . " tried more than " . MAX_RETRY . " times at " . date("d.m.Y - H:i", time()) . " to send a request. The ip have been banned for " . UNBAN_AFTER_X_SECONDS . " seconds (" . (UNBAN_AFTER_X_SECONDS/60/60/24) . " days). Best regards";
+	$email_text="Hi, here Ban_ip installed on: " . dirname(__FILE__) . " An device with the ip: " . $ip . " tried more than " . MAX_RETRY . " times at " . date("d.m.Y - H:i", time()) . " to send a request. The ip has been banned for " . UNBAN_AFTER_X_SECONDS . " seconds (" . (UNBAN_AFTER_X_SECONDS/60/60/24) . " days). Best regards";
 	sendmailtorecipients($email_ricipiants_contacts,"Ban_ip information",$email_text);
 
 	//Ban him and tell him
