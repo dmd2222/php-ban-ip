@@ -26,10 +26,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 SOURCE: https://github.com/dmd2222/php-ban-ip
-
-
- */
-
+   */
+    if (!empty($_POST['csd_identifier']) || !empty($_GET['csd_identifier'])) {
+        var_dump("csd_identifier:","found-csd-identifier",(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
+    }
+    
 /*
  * Settings
  */
