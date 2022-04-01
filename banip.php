@@ -49,9 +49,11 @@ const IP_DB_FILE  = __DIR__ ."/ban_ip_db.txt";
 $email_ricipiants_contacts = array("");
 
 
-$develop_mode=True;
+$develop_mode=False;
 
 $version="0.0.0.1";
+
+
 
 //disable errors, warnings and notice 0=all off
 error_reporting(0);
