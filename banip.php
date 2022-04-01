@@ -302,11 +302,12 @@ $ip = get_ip();
 /*
 Prevent to fast
 */
-if(time() - intval(ip_get_timestamp($ip)) <= $too_fast_time_sec_int){
+$last_request_timestamp=intval(ip_get_timestamp($ip)) ;
+if(time() - $last_request_timestamp <= $too_fast_time_sec_int){
 		//making too fast requests
 		//send response
 		http_response_code( 429 );
-		echo("Your are sending too fast requests. Slow down.");
+		echo("Your are sending too fast requests. Slow down. Last request: " . $last_request_timestamp . " Actual time: " . time());
 		
 }
 
