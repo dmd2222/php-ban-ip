@@ -47,6 +47,14 @@ $email_ricipiants_contacts = array("");
 
 $develop_mode=True;
 
+
+
+//disable errors, warnings and notice 0=all off
+error_reporting(0);
+
+
+
+
 if($develop_mode==true){
 	echo 'Protected by ON BAN IP  <a href="https://github.com/dmd2222/php-ban-ip" target="_blank">?</a> - Ip: ' . get_ip() . ' Number of retries.: '.  ip_number_of_tries( get_ip() );
 }
