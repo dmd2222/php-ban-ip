@@ -48,6 +48,7 @@ const IP_DB_FILE  = __DIR__ ."/ban_ip_db.txt";
 
 $email_ricipiants_contacts = array("");
 
+$too_fast_time_sec_int=3; //Max. 1 request every x seconds.
 
 $develop_mode=False;
 
@@ -166,6 +167,28 @@ function check_ip( $ip ) {
 }
 
 
+function ip_get_timestamp( $ip ) {
+
+
+	$db  = array();
+
+	if ( file_exists( IP_DB_FILE ) ) {
+		$db = load();
+	}
+
+	if ( ! empty( $db ) && array_key_exists( $ip, $db ) ) {
+
+		return $db[ $ip ]["timestamp"];
+
+	} else {
+		$db[ $ip ] = array( "timestamp" => time(), "retries" => 1 ,"granted_retries" => MAX_RETRY,"ip" => $ip);
+	}
+
+	save( $db );
+	return $db[ $ip ]["timestamp"];
+	
+}
+
 function ip_number_of_tries( $ip ) {
 
 
@@ -275,6 +298,17 @@ function get_ip() {
  */
 
 $ip = get_ip();
+
+/*
+Prevent to fast
+*/
+if(time() - intval(ip_get_timestamp($ip) <= $too_fast_time_sec_int)){
+		//making too fast requests
+		//send response
+		http_response_code( 429 );
+		echo("Your are sending too fast requests. Slow down.");
+		
+}
 
 /*
  * Check IP and ban after MAX_RETRY
