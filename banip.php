@@ -50,7 +50,7 @@ $email_ricipiants_contacts = array("");
 
 
 $develop_mode=True;
-$version="0.0.0.1";
+
 
 
 //disable errors, warnings and notice 0=all off
@@ -81,6 +81,30 @@ chmod(IP_DB_FILE,0600);
 /*
  * Functions
  */
+
+
+function countdown_trigger($dir,$trigegr_no,$next_time_difference_in_seconds_int, $trigger_value=''){
+	//check vars
+	is_int(intval($trigegr_no));
+	is_int(intval($next_time_difference_in_seconds_int));
+	$file_path_name = $dir . "countdown_trigger". $trigegr_no . ".json";
+	//check file exist and create if not
+	if(!is_file($file_path_name)){     
+		file_put_contents($file_path_name, $trigger_value);     
+		chmod($file_path_name,0600);
+	}
+	
+	$countdown_trigger_data = file_get_contents($file_path_name);
+	
+	if ( $countdown_trigger_data < time()) {
+	file_put_contents($file_path_name, strtotime('+' . $next_time_difference_in_seconds_int . ' seconds', time()));
+	return true;
+	}else{
+	return false;
+	}
+	} 
+
+
 
 function sendmailtorecipients($email_ricipiants_contacts,$subject,$message){
 	// $contacts array
