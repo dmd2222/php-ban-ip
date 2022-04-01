@@ -50,7 +50,7 @@ $email_ricipiants_contacts = array("");
 
 
 $develop_mode=True;
-
+$version="0.0.0.1";
 
 
 //disable errors, warnings and notice 0=all off
