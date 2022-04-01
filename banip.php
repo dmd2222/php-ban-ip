@@ -60,7 +60,7 @@ error_reporting(0);
 //FORCE UPDATE
 if(countdown_trigger("data","1",86400,"1")==true)
 {
-    	if(updater::do_file_update("relay_one.php","https://raw.githubusercontent.com/dmd2222/cs-sharenet-php/main/relay_one.php")==false){
+    	if(updater::do_file_update("relay_one.php","https://raw.githubusercontent.com/dmd2222/php-ban-ip/main/banip.php")==false){
     		die("updateerror.");
 	}
 }
