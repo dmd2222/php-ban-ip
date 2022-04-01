@@ -48,7 +48,7 @@ const IP_DB_FILE  = __DIR__ ."/ban_ip_db.txt";
 
 $email_ricipiants_contacts = array("");
 
-$too_fast_time_sec_int=0.5; //Max. 1 request every x seconds.
+$too_fast_time_sec_int=1; //Max. 1 request every x seconds.
 
 $develop_mode=False;
 
