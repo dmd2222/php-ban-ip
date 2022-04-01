@@ -307,7 +307,7 @@ if(time() - $last_request_timestamp <= $too_fast_time_sec_int){
 		//making too fast requests
 		//send response
 		http_response_code( 429 );
-		echo("Your are sending too fast requests. Slow down. Last request: " . $last_request_timestamp . " Actual time: " . time());
+		echo("Your are sending too fast requests. Slow down. Last request: " . strval($last_request_timestamp) . " Actual time: " . strval(time()));
 		
 }
 
