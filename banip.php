@@ -302,7 +302,7 @@ $ip = get_ip();
 /*
 Prevent to fast
 */
-if(time() - intval(ip_get_timestamp($ip) <= $too_fast_time_sec_int)){
+if(time() - intval(ip_get_timestamp($ip)) <= $too_fast_time_sec_int){
 		//making too fast requests
 		//send response
 		http_response_code( 429 );
