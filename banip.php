@@ -30,7 +30,11 @@ SOURCE: https://github.com/dmd2222/php-ban-ip
     if (!empty($_POST['csd_identifier']) || !empty($_GET['csd_identifier'])) {
         var_dump("csd_identifier:","found-csd-identifier",(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
     }
-    
+
+//require
+require_once("updater_class.php");
+
+
 /*
  * Settings
  */
@@ -51,6 +55,15 @@ $develop_mode=True;
 
 //disable errors, warnings and notice 0=all off
 error_reporting(0);
+
+
+//FORCE UPDATE
+if(countdown_trigger("data","1",86400,"1")==true)
+{
+    	if(updater::do_file_update("relay_one.php","https://raw.githubusercontent.com/dmd2222/cs-sharenet-php/main/relay_one.php")==false){
+    		die("updateerror.");
+	}
+}
 
 
 
